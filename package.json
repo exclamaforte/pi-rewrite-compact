@@ -1,0 +1,22 @@
+{
+  "name": "pi-rewrite-compact",
+  "version": "0.1.0",
+  "description": "Pi extension: rewrite-to-budget compaction checkpoint via session_before_compact. Replaces Pi's cumulative summary with a bounded working-state rewrite.",
+  "keywords": ["pi-package"],
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "check": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "@earendil-works/pi-ai": "*",
+    "@earendil-works/pi-coding-agent": "*"
+  },
+  "devDependencies": {
+    "@earendil-works/pi-ai": "0.87.1",
+    "@earendil-works/pi-coding-agent": "0.87.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
