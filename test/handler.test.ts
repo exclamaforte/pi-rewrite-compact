@@ -30,6 +30,8 @@ function makeCtx(overrides: Record<string, any> = {}) {
       }),
     },
     ui: { notify: () => {} },
+    cwd: "/tmp/rewrite-compact-test",
+    isProjectTrusted: () => false,
     ...overrides,
   };
 }

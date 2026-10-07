@@ -23,12 +23,12 @@ export interface CheckpointInput {
   customInstructions?: string;
 }
 
-const REQUIREMENTS = `Create a replacement working-state checkpoint for an autonomous coding/research agent.
+const buildRequirements = (budget: number) => `Create a replacement working-state checkpoint for an autonomous coding/research agent.
 
 This output REPLACES the previous checkpoint. It is not an append-only history.
 
 Hard requirements:
-- Maximum ${SUMMARY_TOKEN_BUDGET.toLocaleString()} tokens.
+- Maximum ${budget.toLocaleString()} tokens.
 - Deduplicate aggressively.
 - Remove completed work unless its result constrains future work.
 - Remove stale hypotheses and superseded decisions.
@@ -47,7 +47,7 @@ Unresolved issues
 Relevant artifacts/files/beads
 Next actions`;
 
-export function buildCheckpointText(input: CheckpointInput): string {
+export function buildCheckpointText(input: CheckpointInput, budget: number = SUMMARY_TOKEN_BUDGET): string {
   const previous =
     input.previousSummary && input.previousSummary.trim()
       ? `<previous-checkpoint>\n${input.previousSummary}\n</previous-checkpoint>\n\n`
@@ -56,7 +56,7 @@ export function buildCheckpointText(input: CheckpointInput): string {
     input.customInstructions && input.customInstructions.trim()
       ? `\n\nAdditional operator instructions for this checkpoint (take precedence on conflict):\n${input.customInstructions}\n`
       : "";
-  return `${REQUIREMENTS}${extra}\n\n${previous}<new-history>\n${input.conversationText}\n</new-history>`;
+  return `${buildRequirements(budget)}${extra}\n\n${previous}<new-history>\n${input.conversationText}\n</new-history>`;
 }
 
 export interface CheckpointMessage {
@@ -65,11 +65,11 @@ export interface CheckpointMessage {
   timestamp: number;
 }
 
-export function buildCheckpointMessages(input: CheckpointInput): CheckpointMessage[] {
+export function buildCheckpointMessages(input: CheckpointInput, budget?: number): CheckpointMessage[] {
   return [
     {
       role: "user",
-      content: [{ type: "text", text: buildCheckpointText(input) }],
+      content: [{ type: "text", text: buildCheckpointText(input, budget) }],
       timestamp: Date.now(),
     },
   ];

@@ -39,6 +39,7 @@ pi --extension ./extensions/rewrite-compact.ts
 | Env | Meaning |
 |---|---|
 | `PI_COMPACT_MODEL` | Optional `provider/model-id` for the rewrite call (e.g. `google/gemini-2.5-flash`). Must resolve with configured auth; otherwise ignored. |
+| `rewriteCompact.summaryTokenBudget` (settings.json) | Optional checkpoint size target in tokens (default `5000`, valid `500`–`50000`). Lives alongside Pi's own `compaction` keys, in the global settings (`~/.pi/agent/settings.json`) or the project settings (`<project>/.pi/settings.json`, trusted projects only; project wins). Pi ignores the unknown `rewriteCompact` key; the extension reads it directly. |
 
 Default: the session's own model is reused. The nested call runs under a fresh
 session id with no prompt-cache writes, so current window pressure does not

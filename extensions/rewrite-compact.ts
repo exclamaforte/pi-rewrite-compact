@@ -22,6 +22,7 @@
  *   pi install git:github.com/exclamaforte/pi-rewrite-compact
  */
 
+import { resolveSummaryBudget } from "../src/config.js";
 import { uuidv7 } from "@earendil-works/pi-ai";
 import type { Model } from "@earendil-works/pi-ai";
 import type { ExtensionAPI, ExtensionContext } from "@earendil-works/pi-coding-agent";
@@ -53,14 +54,18 @@ export default function (pi: ExtensionAPI) {
     const conversationText = serializeConversation(
       convertToLlm([...messagesToSummarize, ...turnPrefixMessages]),
     );
-    const messages = buildCheckpointMessages({
-      previousSummary,
-      conversationText,
-      customInstructions,
-    });
+    const budget = resolveSummaryBudget({ cwd: ctx.cwd, projectTrusted: ctx.isProjectTrusted() });
+    const messages = buildCheckpointMessages(
+      {
+        previousSummary,
+        conversationText,
+        customInstructions,
+      },
+      budget,
+    );
 
     ctx.ui.notify(
-      `rewrite-compact: rewriting checkpoint (${tokensBefore.toLocaleString()} tokens) with ${model.id}...`,
+      `rewrite-compact: rewriting checkpoint (${tokensBefore.toLocaleString()} tokens -> <=${budget.toLocaleString()}) with ${model.id}...`,
       "info",
     );
 
